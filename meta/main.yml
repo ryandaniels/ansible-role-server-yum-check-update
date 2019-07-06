@@ -1,0 +1,25 @@
+---
+galaxy_info:
+  role_name: server-yum-check-update
+  author: Ryan Daniels
+  description: Role to check for linux package updates
+  license: MIT
+  min_ansible_version: 1.9.2
+  platforms:
+    - name: EL
+      versions:
+        - all
+    - name: Fedora
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
+  galaxy_tags:
+    - system
+    - update
+
+dependencies: []
