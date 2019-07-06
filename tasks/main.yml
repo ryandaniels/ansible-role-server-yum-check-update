@@ -1,0 +1,38 @@
+---
+- debug: var=proxy_env
+  when: debug_enabled_default | bool
+
+- name: yum check | Check for updates
+  yum:
+    list: updates
+    update_cache: true
+  register: stat_yum_check_output
+  when: ansible_os_family == "RedHat" and server_yum_check_managed | bool
+
+- name: yum check | Output debug yum check
+  debug:
+    msg: "{{ stat_yum_check_output }}"
+  when: ansible_os_family == "RedHat" and server_yum_check_managed | bool and debug_enabled_default | bool
+
+# - name: yum check | Output only package name
+#   debug:
+#     msg: "{{ stat_yum_check_output.results | map(attribute='name') | list }}"
+
+#Output in single line
+#https://stackoverflow.com/questions/31685125/is-it-possible-to-map-multiple-attributes-using-jinja-ansible/40661570#40661570
+# - name: yum check | Output yum check in single line
+#   debug:
+#     msg: "{% for result in stat_yum_check_output.results %}\
+#         {{ result.name }}-{{ result.version }}-{{ result.release }} |
+#       {% endfor %}"
+
+#Output in separate lines
+#https://stackoverflow.com/questions/31685125/is-it-possible-to-map-multiple-attributes-using-jinja-ansible/40661570#40661570
+- name: yum check | Output yum check results
+  debug:
+    msg: "{% set output = [] %}\
+        {% for result in stat_yum_check_output.results %}\
+          {{ output.append( result.name ~ '-' ~ result.version ~ '-' ~ result.release ) }}\
+        {% endfor %}\
+      {{ output }}"
+  when: ansible_os_family == "RedHat" and server_yum_check_managed | bool
